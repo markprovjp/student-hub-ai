@@ -1,0 +1,28 @@
+{
+  "name": "student-hub-ai",
+  "version": "1.0.0",
+  "description": "AI-powered application for students - Hackathon Boilerplate",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:be\" \"npm run dev:fe\"",
+    "dev:fe": "cd FE && npm run dev",
+    "dev:be": "cd BE && php artisan serve",
+    "setup": "npm run setup:fe && npm run setup:be",
+    "setup:fe": "cd FE && npm install",
+    "setup:be": "cd BE && composer install && php artisan key:generate && php artisan migrate:fresh --seed",
+    "build": "cd FE && npm run build",
+    "start": "cd FE && npm run start"
+  },
+  "keywords": [
+    "laravel",
+    "nextjs",
+    "ai",
+    "students",
+    "hackathon",
+    "boilerplate"
+  ],
+  "author": "Hackathon Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
