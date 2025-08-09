@@ -90,22 +90,55 @@ npm run dev
 
 ```
 AI/
-├── FE/                          # Next.js Frontend
-│   ├── src/
-│   │   ├── app/                 # App Router pages
-│   │   ├── components/          # React components
 │   │   ├── contexts/            # React contexts (Auth)
-│   │   └── lib/                 # Utilities (API config)
+## 🚀 Tính năng nổi bật
 │   └── middleware.ts            # Route protection
+✅ **Xác thực người dùng**: Đăng ký, đăng nhập, đăng xuất, bảo vệ route tự động
+✅ **AI Chatbot**: Trợ lý AI tư vấn học tập, quy chế, kỹ năng, lộ trình, v.v.
+✅ **Tư vấn chọn ngành**: Form khảo sát thông minh, AI gợi ý ngành học phù hợp
+✅ **Lịch sử tư vấn**: Xem lại toàn bộ kết quả tư vấn đã thực hiện
+✅ **Chia sẻ kết quả**: Tạo link/QR code chia sẻ kết quả tư vấn cho bạn bè
+✅ **Dashboard Admin**: Thống kê, biểu đồ ngành hot, xu hướng, hoạt động người dùng
+✅ **Trang hồ sơ cá nhân**: Xem, chỉnh sửa thông tin, thống kê riêng từng user
+✅ **QR Code**: Tạo mã QR chia sẻ kết quả tư vấn nhanh chóng
+✅ **Giao diện hiện đại**: Ant Design, Tailwind, responsive, UX thân thiện
+✅ **Thống kê chuyên sâu**: Top ngành, sở thích, kỹ năng, hoạt động theo ngày/tháng
+✅ **Export CSV**: Admin xuất dữ liệu tư vấn ra file CSV
+✅ **Bảo mật**: Sử dụng Laravel Sanctum, axios interceptor tự động
 └── BE/                          # Laravel Backend
-    ├── app/
+## 🔧 API Endpoints chính
     │   └── Http/Controllers/API/
+### Authentication
+- `POST /api/register` - Đăng ký người dùng mới
+- `POST /api/login` - Đăng nhập
+- `POST /api/logout` - Đăng xuất (cần auth)
+- `GET /api/user` - Lấy thông tin user (cần auth)
     │       ├── AuthController.php    # Authentication API
+### AI & Tư vấn
+- `POST /api/ai/process` - Chat với AI
+- `POST /api/ai/survey` - Gửi khảo sát chọn ngành, nhận gợi ý ngành học
+- `GET /api/consultation/history` - Lấy lịch sử tư vấn của user
+- `GET /api/consultation/result/{id}` - Lấy chi tiết kết quả tư vấn (dùng cho chia sẻ)
     │       └── AiController.php      # AI features API
+### Hồ sơ & Dashboard
+- `GET /api/user/profile` - Lấy thông tin hồ sơ, thống kê cá nhân
+- `PUT /api/user/profile` - Cập nhật hồ sơ
+- `GET /api/user/dashboard` - Thống kê dashboard trang chủ
     ├── routes/api.php           # API routes
+### Admin
+- `GET /api/admin/statistics` - Thống kê tổng hợp (biểu đồ, top ngành, hoạt động)
+- `GET /api/admin/consultations` - Danh sách chi tiết các tư vấn
+- `POST /api/admin/export` - Xuất dữ liệu tư vấn ra CSV
     └── database/seeders/        # Sample data
 ```
 
+- **Trang chủ**: Thống kê nhanh, hoạt động gần đây, tổng quan hệ thống
+- **AI Features**: Chat với AI, tư vấn học tập, hỏi đáp tự do
+- **Tư vấn chọn ngành**: Form khảo sát, nhận gợi ý ngành học phù hợp
+- **Lịch sử tư vấn**: Xem lại toàn bộ kết quả tư vấn đã thực hiện
+- **Chia sẻ kết quả**: Trang public kết quả tư vấn qua link/QR code
+- **Hồ sơ cá nhân**: Thông tin user, chỉnh sửa, thống kê riêng
+- **Admin Dashboard**: Thống kê, biểu đồ, xuất CSV, quản lý tư vấn
 ## 🎯 Điểm bắt đầu cho teams
 
 ### Phát triển tính năng AI
