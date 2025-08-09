@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
+use Illuminate\Support\Facades\Log;
+
 class AuthController extends Controller
 {
     /**
@@ -16,11 +18,16 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
+        try {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:6|confirmed',
+            ]);
+        } catch (ValidationException $e) {
+            Log::error('Registration Validation Failed: ' . $e->getMessage());
+            throw $e;
+        }
 
         $user = User::create([
             'name' => $request->name,
@@ -42,12 +49,21 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+        Log::info('Login attempt:', $request->all());
+
+        try {
+            $request->validate([
+                'email' => 'required|email',
+                'password' => 'required',
+            ]);
+        } catch (ValidationException $e) {
+            Log::error('Login Validation Failed: ' . $e->getMessage());
+            Log::error('Validation errors:', $e->errors());
+            throw $e;
+        }
 
         if (!Auth::attempt($request->only('email', 'password'))) {
+            Log::warning('Authentication failed for email: ' . $request->email);
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
@@ -55,6 +71,8 @@ class AuthController extends Controller
 
         $user = Auth::user();
         $token = $user->createToken('auth_token')->plainTextToken;
+
+        Log::info('Login successful for user: ' . $user->id);
 
         return response()->json([
             'user' => $user,
@@ -68,8 +86,13 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
+        $userId = $request->user()->id;
+        Log::info('Logout attempt for user: ' . $userId);
+
         // Revoke the token that was used to authenticate the current request
         $request->user()->currentAccessToken()->delete();
+
+        Log::info('Logout successful for user: ' . $userId);
 
         return response()->json([
             'message' => 'Logout successful'

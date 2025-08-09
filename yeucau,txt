@@ -1,0 +1,30 @@
+Bối cảnh
+
+Trường Cao đẳng FPT Polytechnic đang mong muốn hỗ trợ học sinh, sinh viên khóa 2007 xác định ngành học phù hợp với sở thích, năng lực và định hướng nghề nghiệp của bản thân.
+
+Ban giám khảo kỳ vọng các đội thi xây dựng một ứng dụng tư vấn chọn ngành dựa trên trítuệ nhân tạo (AI), có tính sáng tạo, giao diện dễ sử dụng, và thể hiện rõ năng lực xử lý dữ liệu đầu vào để đưa ra đề xuất ngành học hợp lý.
+
+Yêu cầu chức năng bắt buộc
+
+Các đội thi cần đảm bảo ứng dụng có ít nhất các chức năng sau:
+
+1. Tiếp nhận thông tin đầu vào từ người dùng:
+
+Gợi ý các loại dữ liệu nên thu thập: Sở thích, Kỹ năng / Tố chất, Điểm số các môn học, Môn học yêu thích, Định hướng nghề nghiệp, Thói quen học tập, Mức độ yêu thích công nghệ / sáng tạo / giao tiếp / logic v.v.
+
+2. Phân tích & tư vấn ngành học phù hợp
+
+Sử dụng API AI (/Gemini) để xử lý dữ liệu và gợi ý ngành học phù hợp trong danh sách ngành của FPT Polytechnic.
+
+3. Lưu trữ kết quả tư vấn cá nhân: Quản lý kết quả của từng người dùng (ưu tiên sửdụng database hoặc local storage nếu là demo).
+Chức năng nâng cao
+
+Những đội thi mong muốn nâng cao điểm số có thể phát triển thêm các tính năng sau:
+
+Chia sẻ kết quả thông qua QR Code.
+
+Gợi ý môn học nên tập trung / kỹ năng nên cải thiện nếu muốn học ngành được đề xuất.
+
+Tạo infographic tư vấn ngành học dành cho từng cá nhân.
+
+Thống kê ngành học được quan tâm, thể hiện bằng biểu đồ (bar chart, pie chart...).
