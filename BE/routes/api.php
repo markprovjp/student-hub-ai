@@ -25,6 +25,11 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::post('/logout', [App\Http\Controllers\API\AuthController::class, 'logout']);
     
+    // User Profile Routes
+    Route::get('/user/profile', [App\Http\Controllers\API\UserController::class, 'getProfile']);
+    Route::put('/user/profile', [App\Http\Controllers\API\UserController::class, 'updateProfile']);
+    Route::get('/user/dashboard', [App\Http\Controllers\API\UserController::class, 'getDashboardStats']);
+    
     // AI Routes
     Route::post('/ai/process', [App\Http\Controllers\API\AiController::class, 'process']);
     Route::post('/ai/survey', [App\Http\Controllers\API\AiController::class, 'processSurvey']);

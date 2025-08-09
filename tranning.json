@@ -1,0 +1,34 @@
+{
+  "data": [
+    {
+      "category": "Ngành học mới",
+      "prompt": "Danh sách ngành học mới của FPT Polytechnic là gì?",
+      "completion": "Các ngành học mới nhất của FPT Polytechnic gồm:\n1. Thiết kế đồ họa 3D và Hoạt hình\n2. Quản trị Marketing Digital\n3. Phát triển ứng dụng di động\n4. Công nghệ ô tô điện\n5. Thương mại điện tử và Quản lý chuỗi cung ứng"
+    },
+    {
+      "category": "FAQ",
+      "prompt": "Học phí tại FPT Polytechnic là bao nhiêu?",
+      "completion": "Học phí tại FPT Polytechnic trung bình khoảng 5.5 – 6 triệu đồng/kỳ, tùy ngành và cơ sở đào tạo."
+    },
+    {
+      "category": "FAQ",
+      "prompt": "Điều kiện tuyển sinh FPT Polytechnic là gì?",
+      "completion": "FPT Polytechnic tuyển sinh theo hình thức xét tuyển hồ sơ, yêu cầu thí sinh tốt nghiệp THPT hoặc tương đương."
+    },
+    {
+      "category": "FAQ",
+      "prompt": "Thời gian học tại FPT Polytechnic kéo dài bao lâu?",
+      "completion": "Chương trình học tại FPT Polytechnic kéo dài 2 năm 4 tháng, chia thành 7 học kỳ."
+    },
+    {
+      "category": "Hướng dẫn tư vấn",
+      "prompt": "Cách đăng ký tư vấn tuyển sinh tại FPT Polytechnic",
+      "completion": "Bạn có thể đăng ký tư vấn tuyển sinh bằng cách:\n1. Truy cập website chính thức https://caodang.fpt.edu.vn và điền form liên hệ.\n2. Gọi hotline tuyển sinh theo cơ sở gần nhất.\n3. Đến trực tiếp văn phòng tuyển sinh của FPT Polytechnic để được tư vấn."
+    },
+    {
+      "category": "Hướng dẫn tư vấn",
+      "prompt": "Tư vấn chọn ngành học phù hợp",
+      "completion": "Để chọn ngành học phù hợp tại FPT Polytechnic, bạn nên:\n1. Xác định sở thích và điểm mạnh bản thân.\n2. Tham khảo thông tin chi tiết từng ngành trên website trường.\n3. Nhận tư vấn từ bộ phận tuyển sinh hoặc giảng viên ngành.\n4. Cân nhắc nhu cầu nhân lực và cơ hội việc làm sau khi tốt nghiệp."
+    }
+  ]
+}

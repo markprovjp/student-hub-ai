@@ -30,3 +30,6 @@ Gợi ý môn học nên tập trung / kỹ năng nên cải thiện nếu muố
 Tạo infographic tư vấn ngành học dành cho từng cá nhân.
 
 Thống kê ngành học được quan tâm, thể hiện bằng biểu đồ (bar chart, pie chart...).
+
+
+import cv dự đoán và AI tư vấn ngành 

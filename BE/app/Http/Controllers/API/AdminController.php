@@ -27,7 +27,7 @@ class AdminController extends Controller
                 ->whereNotNull('recommended_majors')
                 ->get()
                 ->flatMap(function ($consultation) {
-                    return json_decode($consultation->recommended_majors, true) ?? [];
+                    return $consultation->recommended_majors ?? [];
                 })
                 ->countBy()
                 ->sortDesc()
@@ -63,7 +63,7 @@ class AdminController extends Controller
             $interestStats = ConsultationResult::select('input_data')
                 ->get()
                 ->flatMap(function ($consultation) {
-                    $inputData = json_decode($consultation->input_data, true);
+                    $inputData = $consultation->input_data ?? [];
                     return $inputData['interests'] ?? [];
                 })
                 ->countBy()
@@ -170,8 +170,8 @@ class AdminController extends Controller
             ];
 
             foreach ($consultations as $consultation) {
-                $inputData = json_decode($consultation->input_data, true) ?? [];
-                $recommendedMajors = json_decode($consultation->recommended_majors, true) ?? [];
+                $inputData = $consultation->input_data ?? [];
+                $recommendedMajors = $consultation->recommended_majors ?? [];
                 
                 $csvData[] = [
                     $consultation->id,
