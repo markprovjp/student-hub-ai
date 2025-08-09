@@ -27,4 +27,13 @@ Route::middleware('auth:sanctum')->group(function () {
     
     // AI Routes
     Route::post('/ai/process', [App\Http\Controllers\API\AiController::class, 'process']);
+    Route::post('/ai/survey', [App\Http\Controllers\API\AiController::class, 'processSurvey']);
+    Route::get('/consultation/history', [App\Http\Controllers\API\AiController::class, 'getConsultationHistory']);
+    Route::get('/consultation/{id}', [App\Http\Controllers\API\AiController::class, 'getConsultationResult']);
+    
+    // Admin Routes (có thể thêm middleware admin sau)
+    Route::get('/admin/statistics', [App\Http\Controllers\API\AdminController::class, 'getConsultationStatistics']);
+    Route::get('/admin/consultations', [App\Http\Controllers\API\AdminController::class, 'getConsultationList']);
+    Route::post('/admin/training-data', [App\Http\Controllers\API\AdminController::class, 'updateTrainingData']);
+    Route::get('/admin/export-consultations', [App\Http\Controllers\API\AdminController::class, 'exportConsultations']);
 });

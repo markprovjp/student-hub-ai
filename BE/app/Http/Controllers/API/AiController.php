@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\ConsultationResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class AiController extends Controller
 {
@@ -53,6 +55,79 @@ class AiController extends Controller
             ]);
         }
     }
+
+    /**
+     * Process survey data and provide major consultation
+     */
+    public function processSurvey(Request $request)
+    {
+        $request->validate([
+            'interests' => 'required|array|min:1',
+            'skills' => 'required|array|min:1',
+            'favoriteSubjects' => 'required|array|min:1',
+            'scores' => 'required|array',
+            'careerGoal' => 'required|string|max:1000',
+            'studyHabits' => 'array',
+            'technologyLevel' => 'integer|min:1|max:5',
+            'creativityLevel' => 'integer|min:1|max:5',
+            'communicationLevel' => 'integer|min:1|max:5',
+            'logicLevel' => 'integer|min:1|max:5',
+            'workEnvironment' => 'string',
+            'learningStyle' => 'string',
+            'personalityType' => 'array'
+        ]);
+
+        $userId = $request->user()->id;
+        $sessionId = Str::uuid();
+        $surveyData = $request->all();
+
+        try {
+            // Tạo prompt chuyên biệt cho tư vấn ngành học
+            $consultationPrompt = $this->createConsultationPrompt($surveyData);
+            
+            // Gọi Gemini AI với prompt tư vấn
+            $aiResponse = $this->callGeminiAI($consultationPrompt, $userId);
+            
+            // Parse AI response để lấy thông tin structured
+            $parsedResult = $this->parseConsultationResponse($aiResponse);
+            
+            // Lưu kết quả vào database
+            $consultationResult = ConsultationResult::create([
+                'user_id' => $userId,
+                'input_data' => $surveyData,
+                'ai_result' => $aiResponse,
+                'recommended_majors' => $parsedResult['majors'] ?? [],
+                'study_suggestions' => $parsedResult['suggestions'] ?? [],
+                'confidence_score' => $parsedResult['confidence'] ?? 0.8,
+                'session_id' => $sessionId
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'result' => $aiResponse,
+                'consultation_id' => $consultationResult->id,
+                'session_id' => $sessionId,
+                'recommended_majors' => $parsedResult['majors'] ?? [],
+                'study_suggestions' => $parsedResult['suggestions'] ?? [],
+                'confidence_score' => $parsedResult['confidence'] ?? 0.8,
+                'timestamp' => now()->toISOString()
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Survey Processing Error: ' . $e->getMessage(), [
+                'user_id' => $userId,
+                'survey_data' => $surveyData,
+                'error' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'error' => 'Có lỗi xảy ra khi xử lý khảo sát. Vui lòng thử lại sau.',
+                'details' => app()->environment('local') ? $e->getMessage() : null
+            ], 500);
+        }
+    }
+    
 
     /**
      * Call Google Gemini AI API với system prompt chuyên biệt cho sinh viên
@@ -323,5 +398,130 @@ Dù câu hỏi này hơi mới với mình, nhưng mình tin rằng:
 
         // Return a random enhanced default response
         return $defaultResponses[array_rand($defaultResponses)];
+    }
+
+    /**
+     * Create consultation prompt based on survey data
+     */
+    private function createConsultationPrompt($surveyData)
+    {
+        $interests = implode(', ', $surveyData['interests']);
+        $skills = implode(', ', $surveyData['skills']);
+        $favoriteSubjects = implode(', ', $surveyData['favoriteSubjects']);
+        $careerGoal = $surveyData['careerGoal'];
+        
+        $scores = $surveyData['scores'];
+        $scoreText = "Toán: {$scores['math']}, Lý: {$scores['physics']}, Hóa: {$scores['chemistry']}, Anh: {$scores['english']}, Văn: {$scores['literature']}";
+        
+        $levels = "Công nghệ: {$surveyData['technologyLevel']}/5, Sáng tạo: {$surveyData['creativityLevel']}/5, Giao tiếp: {$surveyData['communicationLevel']}/5, Logic: {$surveyData['logicLevel']}/5";
+
+        return "Bạn là chuyên gia tư vấn giáo dục tại FPT Polytechnic. Hãy phân tích thông tin sau và đưa ra tư vấn ngành học phù hợp:
+
+🎯 **THÔNG TIN SINH VIÊN:**
+• Sở thích: {$interests}
+• Kỹ năng: {$skills}
+• Môn học yêu thích: {$favoriteSubjects}
+• Điểm số trung bình: {$scoreText}
+• Mục tiêu nghề nghiệp: {$careerGoal}
+• Đánh giá bản thân: {$levels}
+
+📚 **CÁC NGÀNH HỌC TẠI FPT POLYTECHNIC:**
+1. Công nghệ thông tin (IT)
+2. Thiết kế đồ họa (Graphic Design)
+3. Marketing số (Digital Marketing)
+4. Quản trị kinh doanh (Business Administration)
+5. Kế toán (Accounting)
+6. Du lịch (Tourism)
+7. Ngôn ngữ Anh (English Language)
+8. Điện tử viễn thông (Electronics & Telecommunications)
+9. Cơ khí (Mechanical Engineering)
+10. Xây dựng (Civil Engineering)
+
+🎯 **YÊU CẦU TƯ VẤN:**
+1. Đề xuất TOP 3 ngành học phù hợp nhất (theo thứ tự ưu tiên)
+2. Giải thích lý do chọn mỗi ngành dựa trên profile sinh viên
+3. Đề xuất các môn học/kỹ năng cần cải thiện cho ngành được đề xuất hàng đầu
+4. Dự đoán cơ hội nghề nghiệp trong tương lai
+5. Lời khuyên cụ thể cho quá trình học tập
+
+Hãy trả lời chi tiết, thân thiện và tích cực. Sử dụng emoji phù hợp để tạo không khí vui vẻ.";
+    }
+
+    /**
+     * Parse AI consultation response
+     */
+    private function parseConsultationResponse($aiResponse)
+    {
+        // Danh sách ngành học FPT Polytechnic
+        $fptMajors = [
+            'Công nghệ thông tin', 'IT', 'Lập trình',
+            'Thiết kế đồ họa', 'Graphic Design', 'Thiết kế',
+            'Marketing số', 'Digital Marketing', 'Marketing',
+            'Quản trị kinh doanh', 'Business', 'Kinh doanh',
+            'Kế toán', 'Accounting',
+            'Du lịch', 'Tourism',
+            'Ngôn ngữ Anh', 'English',
+            'Điện tử viễn thông', 'Electronics',
+            'Cơ khí', 'Mechanical',
+            'Xây dựng', 'Civil'
+        ];
+
+        $foundMajors = [];
+        $suggestions = [];
+        $confidence = 0.8;
+
+        // Tìm các ngành được đề cập trong response
+        foreach ($fptMajors as $major) {
+            if (stripos($aiResponse, $major) !== false) {
+                $foundMajors[] = $major;
+            }
+        }
+
+        // Extract suggestions (tìm các câu có chứa từ khóa gợi ý)
+        if (preg_match_all('/(?:nên|cần|khuyên|đề xuất|cải thiện|học thêm|tập trung)[^.]*[.]/', $aiResponse, $matches)) {
+            $suggestions = array_slice($matches[0], 0, 5); // Lấy tối đa 5 gợi ý
+        }
+
+        return [
+            'majors' => array_unique(array_slice($foundMajors, 0, 3)), // Top 3 ngành
+            'suggestions' => $suggestions,
+            'confidence' => $confidence
+        ];
+    }
+
+    /**
+     * Get consultation history for user
+     */
+    public function getConsultationHistory(Request $request)
+    {
+        $userId = $request->user()->id;
+        $perPage = $request->get('per_page', 10);
+
+        $consultations = ConsultationResult::where('user_id', $userId)
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
+
+        return response()->json([
+            'success' => true,
+            'data' => $consultations,
+            'message' => 'Lịch sử tư vấn được tải thành công'
+        ]);
+    }
+
+    /**
+     * Get specific consultation result
+     */
+    public function getConsultationResult(Request $request, $id)
+    {
+        $userId = $request->user()->id;
+        
+        $consultation = ConsultationResult::where('user_id', $userId)
+            ->findOrFail($id);
+
+        return response()->json([
+            'success' => true,
+            'data' => $consultation,
+            'message' => 'Chi tiết tư vấn được tải thành công'
+        ]);
     }
 }

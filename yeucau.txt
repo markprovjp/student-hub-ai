@@ -21,6 +21,8 @@ Chức năng nâng cao
 
 Những đội thi mong muốn nâng cao điểm số có thể phát triển thêm các tính năng sau:
 
+admin để nhập file và tranning cho AI về dữ liệu của fpt polytechnic 
+
 Chia sẻ kết quả thông qua QR Code.
 
 Gợi ý môn học nên tập trung / kỹ năng nên cải thiện nếu muốn học ngành được đề xuất.
